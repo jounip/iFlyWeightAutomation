@@ -57,7 +57,7 @@ $fuel_right ="[CLASS:Edit;INSTANCE:3]"
 Run($exe,$path)
 
 ;For testing
-WinActivate($title,$wintext)
+;WinActivate($title,$wintext)
 
 ;Wait until config tool is loaded and window active
 WinWaitActive($title,$wintext)
@@ -90,17 +90,26 @@ $pax = ControlGetText( $title, $wintext, $pax_static )
 ;Find cargo
 $cargo = ControlGetText( $title, $wintext, $cargo_static )
 
-;Find ZFW
-$zfw = ControlGetText( $title, $wintext, $zfw_static )
-
 ;Find Fuel
 $fuel = ControlGetText( $title, $wintext, $fuel_static )
 
-;Find Gross
-$total = ControlGetText( $title, $wintext, $gross_static )
-
 ;Find CG
 $cg = ControlGetText( $title, $wintext, $cg_static )
+
+; Compare wrights to ints for calculations
+$pax_weight = StringReplace($pax," kgs","")
+$cargo_weight = StringReplace($cargo," kgs","")
+$fuel_weight = StringReplace($fuel," kgs","")
+
+; basic weights
+$dow_weight = "41822"
+$crew_weight = "408"
+
+; calculate pax,zfw and gross weights
+$pax_only = $pax_weight-$crew_weight
+$paxs = $pax_only / 91
+$zfw_weight = $dow_weight + $pax_only + $cargo_weight
+$gross_weight = $zfw_weight + $fuel_weight
 
 ; Update the config
 ControlClick ( $title, $wintext, $update_button)
@@ -117,7 +126,7 @@ WinWaitActive($title,$wintext)
 ; Exit the config tool
 ControlClick ( $title, $wintext, $exit_button)
 
-$print = "DOW:" & @TAB & "41414 kgs" & @CRLF & "PAX:" & @TAB & $pax & @CRLF & "Cargo:" & @TAB & $cargo & @CRLF & "ZFW:" & @TAB & $zfw & @CRLF & "Fuel:" & @TAB & $fuel  & @CRLF & "Total:" & @TAB & $total& @CRLF & "CG:" & @TAB & $cg
+$print = "DOW:" & @TAB & $dow_weight & @CRLF & "PAX:" & @TAB & $pax_only & " (" & int($paxs) & ")" & @CRLF & "Cargo:" & @TAB & $cargo_weight & @CRLF & "ZFW:" & @TAB & $zfw_weight & @CRLF & "Fuel:" & @TAB & $fuel_weight  & @CRLF & "Total:" & @TAB & $gross_weight& @CRLF & "CG:" & @TAB & $cg
 
 ;msgbox(1, "Weight info", $print )
 
@@ -128,6 +137,3 @@ FileWriteLine($file, $print  )
 $file_close = FileClose($file)
 
 _FilePrint($temp_filename)
-
-
-
