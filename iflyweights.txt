@@ -1,0 +1,7 @@
+DOW:	41414 kgs
+PAX:	9843 kgs
+Cargo:	4615 kgs
+ZFW:	55872 kgs
+Fuel:	7830 kgs
+Total:	63702 kgs
+CG:	31.3%
